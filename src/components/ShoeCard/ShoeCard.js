@@ -33,17 +33,24 @@ const ShoeCard = ({
 
   return (
     <Link href={`/shoe/${slug}`}>
+      {variant === "new-release"  && <Flag variant={variant}>
+        Just Released
+        </Flag>}
+        { variant === "on-sale" && <Flag variant={variant}>
+        Sale
+        </Flag>}
       <Wrapper>
         <ImageWrapper>
-          <Image alt="" src={imageSrc} />
+          <Image alt={name} src={imageSrc} />
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price isOnSale={variant === 'on-sale'}>{formatPrice(price)}</Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {variant === 'on-sale'&& <SalePrice>{formatPrice(salePrice)}</SalePrice>}
         </Row>
       </Wrapper>
     </Link>
@@ -53,7 +60,23 @@ const ShoeCard = ({
 const Link = styled.a`
   text-decoration: none;
   color: inherit;
+  position: relative;
+  flex: 1 0 340px;
 `;
+
+const Flag = styled.div`
+color: ${COLORS.white};
+border-radius: 0.2rem;
+padding:  10px;
+font-size: ${14/18}rem;
+background-color: ${props => props.variant === "on-sale" ? COLORS.primary : COLORS.secondary};
+font-weight: ${WEIGHTS.medium};
+position: absolute;
+top: 0;
+z-index: 1;
+top: 12px;
+right: -4px;
+`
 
 const Wrapper = styled.article``;
 
@@ -61,10 +84,15 @@ const ImageWrapper = styled.div`
   position: relative;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+width: 100%;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const Name = styled.h3`
@@ -72,7 +100,10 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+text-decoration: ${props => props.isOnSale ? "line-through" : "revert"};
+color: ${props => props.isOnSale ? COLORS.gray[700] : COLORS.gray[900]}
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
